@@ -1,0 +1,94 @@
+@startuml
+class GameManager {
+    - static GameManager instance
+    - int lives
+    - int currentWave
+    - int gold
+    - Map map
+    - Leaderboard leaderboard
+    + startGame()
+    + restartGame()
+    + endGame()
+    + static getInstance() : GameManager
+}
+
+class Map {
+    - List<Tower> towers
+    - List<Enemy> enemies
+    - int width
+    - int height
+    + placeTower(Tower tower, int x, int y)
+    + removeTower(Tower tower)
+    + update()
+}
+
+class Tower {
+    - ITowerStrategy attackStrategy
+    - String type
+    - int damage
+    - float attackSpeed
+    - int range
+    - int level
+    - int cost
+    + attack(Enemy enemy)
+    + upgrade()
+}
+
+interface ITowerStrategy {
+    + executeAttack(Enemy enemy)
+}
+
+class SingleTargetStrategy implements ITowerStrategy {
+    + executeAttack(Enemy enemy)
+}
+
+class AreaOfEffectStrategy implements ITowerStrategy {
+    + executeAttack(Enemy enemy)
+}
+
+class Effect {
+    - String type
+    - float magnitude
+    - int duration
+    + applyEffect(Enemy enemy)
+}
+
+class Enemy {
+    - String type
+    - int health
+    - float speed
+    - int damage
+    - int reward
+    - List<Effect> effects
+    + move()
+    + takeDamage(int damage)
+    + applyEffect(Effect effect)
+    + onDeath()
+}
+
+class EnemyFactory {
+    + createEnemy(String type) : Enemy
+}
+
+class Player {
+    - String name
+    - int score
+    + updateScore(int wavesSurvived)
+}
+
+class Leaderboard {
+    - List<Player> players
+    + addScore(Player player)
+    + getTopScores(int topN)
+}
+
+GameManager "1" *-- "1" Map
+GameManager "1" *-- "1" Leaderboard
+Map "1" *-- "0..*" Tower
+Map "1" *-- "0..*" Enemy
+Tower "1" *-- "1" ITowerStrategy
+Tower "1" *-- "1" Effect
+Effect "0..*" *-- "1" Enemy
+EnemyFactory "1" *-- "0..*" Enemy
+Leaderboard "1" *-- "0..*" Player
+@enduml
