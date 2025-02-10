@@ -1,78 +1,71 @@
-using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Singleton instance
     public static GameManager Instance { get; private set; }
 
-    // Game state variables
-    [SerializeField] private int lives = 20;
-    [SerializeField] private int currentWave = 0;
-    [SerializeField] private int gold = 100;
+    public int lives = 20; // Player lives
+    public int currentWave = 0; // Current wave number
+    public int gold = 100; // Player's starting gold
 
-    // References to other systems
-    private Map map;
-    private Leaderboard leaderboard;
-
-    // Events for game state changes
-    public delegate void GameStateChangeHandler();
-    public static event GameStateChangeHandler OnGameStart;
-    public static event GameStateChangeHandler OnGameEnd;
+    public Map map; // Reference to the map
+    public Leaderboard leaderboard; // Reference to the leaderboard
+    public Player player; // Reference to the player
+    public WaveManager waveManager; // Manages waves of enemies
 
     private void Awake()
     {
-        // Ensure only one instance exists
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Initialize other components
-        map = FindObjectOfType<Map>();
-        leaderboard = FindObjectOfType<Leaderboard>();
+        InitializeGame();
     }
 
-    private void Start()
+    private void InitializeGame()
     {
-        // Optional: Automatically start the game when the scene loads
-        StartGame();
-    }
+        // Initialize player and other game components
+        if (player == null)
+            player = new Player("name");
 
-    // Public methods
+        player.EarnGold(gold);
+        player.Lives = lives;
+
+        Debug.Log("Game initialized.");
+    }
 
     public void StartGame()
     {
-        Debug.Log("Game started");
+        Debug.Log("Game started.");
         currentWave = 1;
-        lives = 20;
-        gold = 100;
-        OnGameStart?.Invoke();
-        
-        // Start the first wave
-        StartCoroutine(SpawnWave());
+        waveManager.StartWave(currentWave);
     }
 
     public void RestartGame()
     {
-        Debug.Log("Game restarted");
+        Debug.Log("Game restarted.");
+        InitializeGame();
         StartGame();
     }
 
     public void EndGame()
     {
-        Debug.Log("Game ended");
-        OnGameEnd?.Invoke();
-        // Optionally handle leaderboard updates or display game over screen
+        Debug.Log("Game over.");
+        // Display Game Over UI and save scores
+        leaderboard.AddScore(player);
     }
 
     public void LoseLife(int amount)
     {
-        lives -= amount;
-        if (lives <= 0)
+        player.Lives -= amount;
+        Debug.Log($"Player lost {amount} lives. Remaining: {player.Lives}");
+
+        if (player.Lives <= 0)
         {
             EndGame();
         }
@@ -80,29 +73,28 @@ public class GameManager : MonoBehaviour
 
     public void AddGold(int amount)
     {
-        gold += amount;
+        player.EarnGold(amount);
+        Debug.Log($"Player earned {amount} gold. Total: {player.Gold}");
     }
 
     public bool SpendGold(int amount)
     {
-        if (gold >= amount)
+        if (player.SpendGold(amount))
         {
-            gold -= amount;
+            Debug.Log($"Player spent {amount} gold. Remaining: {player.Gold}");
             return true;
         }
+
+        Debug.Log("Not enough gold!");
         return false;
     }
 
-    private IEnumerator SpawnWave()
+    public void CompleteWave()
     {
-        Debug.Log($"Spawning wave {currentWave}");
-
-        // Replace with your WaveManager logic
-        yield return new WaitForSeconds(2f);
-
-        Debug.Log($"Wave {currentWave} completed");
         currentWave++;
+        Debug.Log($"Wave {currentWave - 1} completed. Starting wave {currentWave}.");
 
-        // Check for game completion or prepare next wave
+        player.UpdateScore(currentWave);
+        waveManager.StartWave(currentWave);
     }
 }

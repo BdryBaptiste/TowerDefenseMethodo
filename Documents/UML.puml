@@ -6,6 +6,7 @@ class GameManager {
     - int gold
     - Map map
     - Leaderboard leaderboard
+    - Player player
     + startGame()
     + restartGame()
     + endGame()
@@ -20,6 +21,7 @@ class Map {
     + placeTower(Tower tower, int x, int y)
     + removeTower(Tower tower)
     + update()
+    + isPathBlocked() : boolean
 }
 
 class Tower {
@@ -28,10 +30,14 @@ class Tower {
     - int damage
     - float attackSpeed
     - int range
-    - int level
     - int cost
+    - TowerEffect effect
     + attack(Enemy enemy)
-    + upgrade()
+    + clone() : Tower
+    + upgradeRange(int amount)
+    + upgradeDamage(int amount)
+    + upgradeCooldown(float amount)
+    + setStrategy(ITowerStrategy strategy)
 }
 
 interface ITowerStrategy {
@@ -46,10 +52,26 @@ class AreaOfEffectStrategy implements ITowerStrategy {
     + executeAttack(Enemy enemy)
 }
 
-class Effect {
-    - String type
+interface TowerFactory {
+    + createTower(String type) : Tower
+}
+
+class TowerEffect {
+    - String effectType
     - float magnitude
     - int duration
+    + applyEffect(Enemy enemy)
+}
+
+class BurnEffect extends TowerEffect {
+    + applyEffect(Enemy enemy)
+}
+
+class SlowEffect extends TowerEffect {
+    + applyEffect(Enemy enemy)
+}
+
+class PoisonEffect extends TowerEffect {
     + applyEffect(Enemy enemy)
 }
 
@@ -59,21 +81,49 @@ class Enemy {
     - float speed
     - int damage
     - int reward
-    - List<Effect> effects
+    - List<TowerEffect> effects
     + move()
     + takeDamage(int damage)
-    + applyEffect(Effect effect)
+    + applyEffect(TowerEffect effect)
     + onDeath()
+    + updateEffects()
 }
 
 class EnemyFactory {
     + createEnemy(String type) : Enemy
 }
 
+abstract class TowerDecorator extends Tower {
+    - Tower decoratedTower
+    + attack(Enemy enemy)
+    + getCost() : int
+}
+
+class DamageUpgradeDecorator extends TowerDecorator {
+    + DamageUpgradeDecorator(Tower tower)
+    + attack(Enemy enemy)
+    + getCost() : int
+}
+
+class RangeUpgradeDecorator extends TowerDecorator {
+    + RangeUpgradeDecorator(Tower tower)
+    + attack(Enemy enemy)
+    + getCost() : int
+}
+
+class SpeedUpgradeDecorator extends TowerDecorator {
+    + SpeedUpgradeDecorator(Tower tower)
+    + attack(Enemy enemy)
+    + getCost() : int
+}
+
 class Player {
     - String name
     - int score
+    - int goldEarned
     + updateScore(int wavesSurvived)
+    + spendGold(int amount) : boolean
+    + earnGold(int amount)
 }
 
 class Leaderboard {
@@ -84,11 +134,14 @@ class Leaderboard {
 
 GameManager "1" *-- "1" Map
 GameManager "1" *-- "1" Leaderboard
+GameManager "1" *-- "1" Player
 Map "1" *-- "0..*" Tower
 Map "1" *-- "0..*" Enemy
 Tower "1" *-- "1" ITowerStrategy
-Tower "1" *-- "1" Effect
-Effect "0..*" *-- "1" Enemy
+Tower "1" *-- "1" TowerEffect
+TowerFactory "1" *-- "0..*" Tower
+TowerEffect "0..*" *-- "1" Enemy
 EnemyFactory "1" *-- "0..*" Enemy
 Leaderboard "1" *-- "0..*" Player
+TowerDecorator "0..*" o-- "1" Tower
 @enduml

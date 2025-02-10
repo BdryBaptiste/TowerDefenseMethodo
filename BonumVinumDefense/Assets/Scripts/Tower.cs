@@ -2,79 +2,70 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    [Header("Tower Attributes")]
-    public float range = 5f; // Attack range
-    public float damage = 10f; // Damage dealt per attack
-    public float attackSpeed = 1f; // Attacks per second
+    public float Range { get; protected set; } = 5f; // Attack range
+    public int Damage { get; protected set; } = 10; // Damage dealt per attack
+    public float Cooldown { get; protected set; } = 1f; // Attacks per second
 
-    [Header("Tower Components")]
-    public Transform target; // Current enemy target
     public Transform firePoint; // Point from where projectiles are fired
 
     private float attackCooldown = 0f; // Time left until the next attack
 
+    // Attack behavior strategy
+    public ITowerStrategy attackStrategy;
+
+    // Special effect applied by the tower
+    public TowerEffect effect;
+
     private void Update()
     {
-        // Check for a target
-        if (target == null || !IsTargetInRange())
-        {
-            FindTarget();
-            return;
-        }
-
-        // Attack cooldown management
+        // Check cooldown
         attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0f)
         {
             Attack();
-            attackCooldown = 1f / attackSpeed;
+            attackCooldown = 1f / Cooldown;
         }
     }
 
-    private void FindTarget()
+    public void SetStrategy(ITowerStrategy strategy)
     {
-        // Find the nearest enemy within range
-        Enemy[] enemies = FindObjectsOfType<Enemy>();
-        float shortestDistance = Mathf.Infinity;
-        Enemy nearestEnemy = null;
+        attackStrategy = strategy;
+    }
 
-        foreach (Enemy enemy in enemies)
+    public virtual void Attack()
+    {
+        if (attackStrategy != null)
         {
-            float distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-            if (distanceToEnemy < shortestDistance && distanceToEnemy <= range)
-            {
-                shortestDistance = distanceToEnemy;
-                nearestEnemy = enemy;
-            }
-        }
-
-        if (nearestEnemy != null)
-        {
-            target = nearestEnemy.transform;
+            attackStrategy.Execute(this);
         }
         else
         {
-            target = null;
+            Debug.LogWarning("No attack strategy set!");
         }
     }
 
-    private bool IsTargetInRange()
+    public void UpgradeRange(float amount)
     {
-        return Vector3.Distance(transform.position, target.position) <= range;
+        Range += amount;
+        Debug.Log($"Range upgraded to {Range}");
     }
 
-    private void Attack()
+    public void UpgradeDamage(int amount)
     {
-        // Example attack logic (e.g., instantiate a projectile)
-        Debug.Log("Attacking " + target.name);
+        Damage += amount;
+        Debug.Log($"Damage upgraded to {Damage}");
+    }
 
-        // If using projectiles, implement shooting logic here
+    public void UpgradeCooldown(float amount)
+    {
+        Cooldown = Mathf.Max(0.1f, Cooldown - amount); // Prevent cooldown from going below 0.1
+        Debug.Log($"Cooldown upgraded to {Cooldown}");
     }
 
     private void OnDrawGizmosSelected()
     {
         // Visualize the range of the tower in the editor
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, Range);
     }
 }

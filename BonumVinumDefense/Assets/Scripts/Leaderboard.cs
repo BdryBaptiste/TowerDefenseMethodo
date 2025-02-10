@@ -1,46 +1,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Leaderboard : MonoBehaviour
+public class Leaderboard
 {
-    // Data structure to store player scores
-    private List<PlayerScore> playerScores = new List<PlayerScore>();
+    private List<Player> players = new List<Player>(); // List of players and their scores
 
-    public void AddScore(string playerName, int score)
+    // Adds a player's score to the leaderboard
+    public void AddScore(Player player)
     {
-        // Check if player already exists
-        PlayerScore existingPlayer = playerScores.Find(player => player.Name == playerName);
+        players.Add(player);
+        players.Sort((a, b) => b.Score.CompareTo(a.Score)); // Sort by score in descending order
 
-        if (existingPlayer != null)
-        {
-            // Update the score if it's higher
-            if (score > existingPlayer.Score)
-            {
-                existingPlayer.Score = score;
-            }
-        }
-        else
-        {
-            // Add a new player score
-            playerScores.Add(new PlayerScore(playerName, score));
-        }
-
-        // Sort the leaderboard by score in descending order
-        playerScores.Sort((a, b) => b.Score.CompareTo(a.Score));
+        Debug.Log($"Added {player.Name} to the leaderboard with score: {player.Score}");
     }
 
-    public List<PlayerScore> GetTopScores(int count)
+    // Retrieves the top N scores
+    public List<Player> GetTopScores(int topN)
     {
-        // Return the top scores, limited by the requested count
-        return playerScores.GetRange(0, Mathf.Min(count, playerScores.Count));
+        int count = Mathf.Min(topN, players.Count);
+        List<Player> topPlayers = players.GetRange(0, count);
+
+        Debug.Log("Top Scores:");
+        foreach (var player in topPlayers)
+        {
+            Debug.Log($"{player.Name}: {player.Score}");
+        }
+
+        return topPlayers;
     }
 
+    // Displays the leaderboard in debug logs
     public void PrintLeaderboard()
     {
         Debug.Log("=== Leaderboard ===");
-        foreach (PlayerScore score in playerScores)
+        foreach (var player in players)
         {
-            Debug.Log(score.Name + ": " + score.Score);
+            Debug.Log($"{player.Name}: {player.Score}");
         }
     }
 }
