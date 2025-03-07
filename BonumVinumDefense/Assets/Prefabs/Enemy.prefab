@@ -118,6 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cdc564f3789a3945bf046f3fc3b664e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  speed: 3.5
-  rewardOnDeath: 10
+  Type: 
+  Health: 100
+  Speed: 3.5
+  Damage: 1
+  Reward: 10

@@ -10,6 +10,4 @@ public abstract class TowerEffect
         Magnitude = magnitude;
         Duration = duration;
     }
-
-    public abstract void ApplyEffect(Enemy enemy);
 }

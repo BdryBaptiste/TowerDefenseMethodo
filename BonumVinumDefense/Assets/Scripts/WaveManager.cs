@@ -4,41 +4,77 @@ using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class Wave
-    {
-        public string waveName; // Name of the wave
-        public List<EnemySpawnInfo> enemies; // List of enemies to spawn
-    }
-
-    [System.Serializable]
-    public class EnemySpawnInfo
-    {
-        public GameObject enemyPrefab; // Enemy type to spawn
-        public int count; // Number of enemies
-        public float spawnDelay; // Delay between spawns
-    }
-
-    public List<Wave> waves; // All waves in the level
-    public Transform spawnPoint; // Spawn location for enemies
-
+    public List<Wave> baseWaves;
+    public Transform spawnPoint;
+    public GameObject enemyPrefab;
     private int currentWaveIndex = 0;
     private bool isSpawning = false;
+    private int aliveEnemies = 0;
 
-    public delegate void WaveCompletedHandler();
+    public delegate void WaveCompletedHandler(int waveNumber);
     public event WaveCompletedHandler OnWaveCompleted;
 
-    public void StartWave(int waveNumber)
+    public void StartInfiniteWaves()
     {
-        if (waveNumber - 1 < waves.Count)
+        Debug.Log("Starting infinite waves.");
+        if (baseWaves == null || baseWaves.Count == 0)
         {
-            currentWaveIndex = waveNumber - 1;
-            StartCoroutine(SpawnWave(waves[currentWaveIndex]));
+            Debug.LogWarning("Base waves list is empty! Creating a default wave.");
+            CreateDefaultBaseWave();
         }
-        else
+
+        StartCoroutine(SpawnInfiniteWaves());
+    }
+
+    private void CreateDefaultBaseWave()
+    {
+        baseWaves = new List<Wave>();
+
+        Wave defaultWave = new Wave
         {
-            Debug.Log("All waves completed.");
+            waveName = "Default Wave",
+            enemies = new List<EnemySpawnInfo>
+            {
+                new EnemySpawnInfo
+                {
+                    enemyPrefab = enemyPrefab,
+                    count = 5,
+                    spawnDelay = 1.5f
+                }
+            }
+        };
+
+        baseWaves.Add(defaultWave);
+    }
+
+
+    private IEnumerator SpawnInfiniteWaves()
+    {
+        while (true)
+        {
+            Wave newWave = GenerateWave(currentWaveIndex + 1);
+            yield return StartCoroutine(SpawnWave(newWave));
+            currentWaveIndex++;
+            yield return new WaitForSeconds(5f);
         }
+    }
+
+    private Wave GenerateWave(int waveNumber)
+    {
+        Wave baseWave = baseWaves[waveNumber % baseWaves.Count];
+        Wave generatedWave = new Wave { waveName = $"Wave {waveNumber}", enemies = new List<EnemySpawnInfo>() };
+
+        foreach (var enemyInfo in baseWave.enemies)
+        {
+            EnemySpawnInfo newEnemyInfo = new EnemySpawnInfo
+            {
+                enemyPrefab = enemyInfo.enemyPrefab,
+                count = enemyInfo.count + (waveNumber / 2), // Increase enemy count gradually
+                spawnDelay = Mathf.Max(0.1f, enemyInfo.spawnDelay * 0.95f) // Reduce spawn delay over time
+            };
+            generatedWave.enemies.Add(newEnemyInfo);
+        }
+        return generatedWave;
     }
 
     private IEnumerator SpawnWave(Wave wave)
@@ -58,16 +94,32 @@ public class WaveManager : MonoBehaviour
         isSpawning = false;
         Debug.Log($"Wave {wave.waveName} completed.");
 
-        OnWaveCompleted?.Invoke();
+        while (aliveEnemies > 0)
+        {
+            yield return null;
+        }
+
+        OnWaveCompleted?.Invoke(currentWaveIndex + 1);
     }
 
     private void SpawnEnemy(GameObject enemyPrefab)
     {
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+        aliveEnemies++;
+        Enemy enemyComponent = enemy.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.OnDeathEvent += EnemyDied;
+        }
+    }
+
+    private void EnemyDied()
+    {
+        aliveEnemies--;
     }
 
     public bool IsWaveInProgress()
     {
-        return isSpawning;
+        return isSpawning || aliveEnemies > 0;
     }
 }

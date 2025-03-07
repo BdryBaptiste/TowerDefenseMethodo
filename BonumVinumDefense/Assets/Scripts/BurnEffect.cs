@@ -1,14 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BurnEffect : TowerEffect
+public class BurnEffect : EnemyEffect
 {
-    public BurnEffect(float magnitude, int duration) : base("Burn", magnitude, duration) { }
+    public float DamagePerTick { get; private set; }
+    public float TickInterval { get; private set; }
+    public float NextTickTime { get; set; }
 
-    public override void ApplyEffect(Enemy enemy)
+    public BurnEffect(float damagePerTick, float tickInterval, float duration) : base(duration)
     {
-        enemy.ApplyEffect(this);
-        Debug.Log($"Applied burn effect to {enemy.name} for {Duration} seconds.");
+        DamagePerTick = damagePerTick;
+        TickInterval = tickInterval;
+        NextTickTime = Time.time + TickInterval;
     }
 }

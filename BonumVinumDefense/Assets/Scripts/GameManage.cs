@@ -4,17 +4,19 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public int lives = 20; // Player lives
-    public int currentWave = 0; // Current wave number
-    public int gold = 100; // Player's starting gold
+    public int lives = 20;
+    public int currentWave = 0;
+    public int gold = 100;
 
-    public Map map; // Reference to the map
-    public Leaderboard leaderboard; // Reference to the leaderboard
-    public Player player; // Reference to the player
-    public WaveManager waveManager; // Manages waves of enemies
+    public Map map;
+    public Leaderboard leaderboard;
+    public Player player;
+    public WaveManager waveManager;
 
     private void Awake()
     {
+        Debug.Log("Game Manager Awake");
+        
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -29,7 +31,6 @@ public class GameManager : MonoBehaviour
 
     private void InitializeGame()
     {
-        // Initialize player and other game components
         if (player == null)
             player = new Player("name");
 
@@ -43,7 +44,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game started.");
         currentWave = 1;
-        waveManager.StartWave(currentWave);
+        Debug.Log($"Current wave: {currentWave}");
+        waveManager.StartInfiniteWaves(); // Now starts infinite waves
     }
 
     public void RestartGame()
@@ -56,7 +58,6 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         Debug.Log("Game over.");
-        // Display Game Over UI and save scores
         leaderboard.AddScore(player);
     }
 
@@ -87,14 +88,5 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Not enough gold!");
         return false;
-    }
-
-    public void CompleteWave()
-    {
-        currentWave++;
-        Debug.Log($"Wave {currentWave - 1} completed. Starting wave {currentWave}.");
-
-        player.UpdateScore(currentWave);
-        waveManager.StartWave(currentWave);
     }
 }

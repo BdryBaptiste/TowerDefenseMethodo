@@ -34,18 +34,17 @@ public class Node : MonoBehaviour
         SetTransparency(0f);
     }
 
-    public bool PlaceTurret(GameObject turretPrefab)
+    public GameObject PlaceTurret(GameObject turretPrefab)
     {
         if (!isOccupied)
         {
-            Instantiate(turretPrefab, transform.position, Quaternion.identity);
             isOccupied = true;
-            return true; // Placement successful
+            return Instantiate(turretPrefab, transform.position, Quaternion.identity); // Placement successful
         }
         else
         {
             Debug.Log("Node is already occupied!");
-            return false; // Placement failed
+            return null; // Placement failed
         }
     }
 

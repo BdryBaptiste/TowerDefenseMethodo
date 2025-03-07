@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public delegate void EnemyDeathEvent();
+    public event EnemyDeathEvent OnDeathEvent;
+    
     [Header("Enemy Attributes")]
     public string Type;
     public int Health = 100; // Enemy's current health
     public float Speed = 3.5f; // Movement speed
-    public int Damage = 10; // Damage dealt to the player on reaching the goal
+    public int Damage = 1; // Damage dealt to the player on reaching the goal
     public int Reward = 10; // Gold rewarded on death
 
     // List of active effects applied to the enemy
@@ -24,36 +27,48 @@ public class Enemy : MonoBehaviour
     {
         Move();
         UpdateEffects();
+        CheckHealth();
     }
 
     public void Move()
     {
-        // Logic for enemy movement
-        transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+        transform.Translate(Vector3.right * Speed * Time.deltaTime);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        Health -= damage;
-        Debug.Log($"{name} took {damage} damage. Remaining health: {Health}");
+        if (damage <= 0) return;
 
+        if(damage <= Health)
+        {
+            Health -= Mathf.FloorToInt(damage);
+            
+        }
+        else
+        {
+            Health = 0;
+        }
+
+        Debug.Log($"{name} took {damage} damage. Remaining health: {Health}");
+    }
+
+    private void CheckHealth()
+    {
         if (Health <= 0)
         {
+            Health = 0;
             OnDeath();
         }
     }
 
-    public void ApplyEffect(TowerEffect effect)
+    public void ApplyEffect(EnemyEffect effect)
     {
-        // Add a new active effect
-        ActiveEffect newEffect = new ActiveEffect(effect, Time.time);
-        activeEffects.Add(newEffect);
-        Debug.Log($"{name} is affected by {effect.EffectType} for {effect.Duration} seconds.");
+        activeEffects.Add(new ActiveEffect(effect, Time.time));
+        Debug.Log($"{name} affected by {effect.GetType().Name} for {effect.Duration} seconds.");
     }
 
     private void UpdateEffects()
     {
-        // Iterate through all active effects and update their behavior
         for (int i = activeEffects.Count - 1; i >= 0; i--)
         {
             ActiveEffect activeEffect = activeEffects[i];
@@ -70,31 +85,38 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void ApplyEffectBehavior(TowerEffect effect)
+    private void ApplyEffectBehavior(EnemyEffect effect)
     {
-        switch (effect.EffectType)
+        switch (effect)
         {
-            case "Burn":
-                TakeDamage(Mathf.RoundToInt(effect.Magnitude * Time.deltaTime));
+            case BurnEffect burn:
+                if (Time.time >= burn.NextTickTime) // Check if it's time to apply damage
+                {
+                    TakeDamage(burn.DamagePerTick);
+                    burn.NextTickTime = Time.time + burn.TickInterval; // Schedule next tick
+                }
                 break;
 
-            case "Slow":
-                Speed = Mathf.Max(baseSpeed * (1 - effect.Magnitude), 0.5f); // Slow down
+            case SlowEffect slow:
+                Speed = Mathf.Max(baseSpeed * (1 - slow.SlowPercentage), 0.5f);
                 break;
 
-            case "Poison":
-                TakeDamage(Mathf.RoundToInt(effect.Magnitude * Time.deltaTime));
+            case PoisonEffect poison:
+                if (Time.time >= poison.NextTickTime)
+                {
+                    TakeDamage(poison.DamagePerTick);
+                    poison.NextTickTime = Time.time + poison.TickInterval;
+                }
                 break;
         }
     }
 
     private void RemoveEffect(ActiveEffect activeEffect)
     {
-        Debug.Log($"{name} is no longer affected by {activeEffect.Effect.EffectType}.");
+        Debug.Log($"{name} no longer affected by {activeEffect.Effect.GetType().Name}.");
         activeEffects.Remove(activeEffect);
 
-        // Reset speed if the effect was slowing
-        if (activeEffect.Effect.EffectType == "Slow")
+        if (activeEffect.Effect is SlowEffect)
         {
             Speed = baseSpeed;
         }
@@ -102,11 +124,9 @@ public class Enemy : MonoBehaviour
 
     private void OnDeath()
     {
-        // Notify GameManager to reward the player
+        OnDeathEvent?.Invoke();
         GameManager.Instance.AddGold(Reward);
-        Debug.Log($"{name} died. Rewarding player with {Reward} gold.");
-
-        // Destroy the enemy
+        Debug.Log($"{name} died. Player earned {Reward} gold.");
         Destroy(gameObject);
     }
 }

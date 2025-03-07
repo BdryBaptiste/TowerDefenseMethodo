@@ -3,12 +3,13 @@ using UnityEngine;
 
 public class ActiveEffect
 {
-    public TowerEffect Effect { get; private set; }
+    public EnemyEffect Effect { get; private set; }
     public float StartTime { get; private set; }
 
-    public ActiveEffect(TowerEffect effect, float startTime)
+    public ActiveEffect(EnemyEffect effect, float startTime)
     {
         Effect = effect;
         StartTime = startTime;
     }
+
 }

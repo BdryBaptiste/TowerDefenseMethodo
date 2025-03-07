@@ -1,14 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoisonEffect : TowerEffect
+public class PoisonEffect : EnemyEffect
 {
-    public PoisonEffect(float magnitude, int duration) : base("Poison", magnitude, duration) { }
+    public float DamagePerTick { get; private set; }
+    public float TickInterval { get; private set; }
+    public float NextTickTime { get; set; }
 
-    public override void ApplyEffect(Enemy enemy)
+    public PoisonEffect(float damagePerTick, float tickInterval, float duration) : base(duration)
     {
-        enemy.ApplyEffect(this);
-        Debug.Log($"Applied poison effect to {enemy.name}, dealing {Magnitude} damage over {Duration} seconds.");
+        DamagePerTick = damagePerTick;
+        TickInterval = tickInterval;
+        NextTickTime = Time.time + TickInterval;
     }
 }

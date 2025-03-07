@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    public GameObject gridPrefab; // Your 9x9 grid prefab
+    public GameObject gridPrefab;
     private Node[,] gridNodes; // Array to store node references
 
     public int gridSize = 9; // Size of the grid (assume square)

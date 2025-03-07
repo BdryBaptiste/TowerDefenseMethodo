@@ -7,14 +7,18 @@ public class Tower : MonoBehaviour
     public float Cooldown { get; protected set; } = 1f; // Attacks per second
 
     public Transform firePoint; // Point from where projectiles are fired
+    public Transform visualHolder;
+
+    public GameObject burnVisualPrefab;
+    public GameObject slowVisualPrefab;
+    public GameObject poisonVisualPrefab;
 
     private float attackCooldown = 0f; // Time left until the next attack
 
     // Attack behavior strategy
     public ITowerStrategy attackStrategy;
 
-    // Special effect applied by the tower
-    public TowerEffect effect;
+    private TowerDecorator effectDecorator;
 
     private void Update()
     {
@@ -30,36 +34,75 @@ public class Tower : MonoBehaviour
     public void SetStrategy(ITowerStrategy strategy)
     {
         attackStrategy = strategy;
+        Debug.Log($"Tower : Tower set to {strategy.GetType().Name} mode.");
     }
 
-    public virtual void Attack()
+    public void SetEffect(string effectType)
     {
-        if (attackStrategy != null)
+        switch (effectType)
+        {
+            case "Burn":
+                effectDecorator = new BurnEffectDecorator(attackStrategy, 5f, 0.5f, 3f);
+                UpdateTowerVisual(burnVisualPrefab);
+                break;
+            case "Slow":
+                effectDecorator = new SlowEffectDecorator(attackStrategy, 0.5f, 3f);
+                UpdateTowerVisual(slowVisualPrefab);
+                break;
+            case "Poison":
+                effectDecorator = new PoisonEffectDecorator(attackStrategy, 6f, 1f, 10f);
+                UpdateTowerVisual(poisonVisualPrefab);
+                break;
+        }
+    }
+
+    public void Attack()
+    {
+        if (effectDecorator != null)
+        {
+            effectDecorator.Execute(this); // ✅ Decorator handles effects
+        }
+        else if (attackStrategy != null)
         {
             attackStrategy.Execute(this);
         }
-        else
+    }
+
+
+    private void UpdateTowerVisual(GameObject visualPrefab)
+    {
+        Debug.Log("Tower : Updating visual effect");
+        if (visualHolder == null) return;
+
+        foreach (Transform child in visualHolder)
         {
-            Debug.LogWarning("No attack strategy set!");
+            Debug.Log($"Tower : Destroying {child.gameObject.name}");
+            Destroy(child.gameObject);
+        }
+
+        if (visualPrefab != null)
+        {
+            Debug.Log($"Tower : Instantiating {visualPrefab.name}");
+            Instantiate(visualPrefab, visualHolder.position, visualHolder.rotation, visualHolder);
         }
     }
 
     public void UpgradeRange(float amount)
     {
         Range += amount;
-        Debug.Log($"Range upgraded to {Range}");
+        Debug.Log($"Tower : Range upgraded to {Range}");
     }
 
     public void UpgradeDamage(int amount)
     {
         Damage += amount;
-        Debug.Log($"Damage upgraded to {Damage}");
+        Debug.Log($"Tower : Damage upgraded to {Damage}");
     }
 
     public void UpgradeCooldown(float amount)
     {
         Cooldown = Mathf.Max(0.1f, Cooldown - amount); // Prevent cooldown from going below 0.1
-        Debug.Log($"Cooldown upgraded to {Cooldown}");
+        Debug.Log($"Tower : Cooldown upgraded to {Cooldown}");
     }
 
     private void OnDrawGizmosSelected()

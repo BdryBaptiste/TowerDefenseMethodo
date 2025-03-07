@@ -1,14 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class SlowEffect : TowerEffect
+public class SlowEffect : EnemyEffect
 {
-    public SlowEffect(float magnitude, int duration) : base("Slow", magnitude, duration) { }
+    public float SlowPercentage { get; private set; }
 
-    public override void ApplyEffect(Enemy enemy)
+    public SlowEffect(float slowPercentage, float duration) : base(duration)
     {
-        enemy.ApplyEffect(this);
-        Debug.Log($"Applied slow effect to {enemy.name}, reducing speed by {Magnitude} for {Duration} seconds.");
+        SlowPercentage = slowPercentage;
     }
 }

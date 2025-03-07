@@ -6,17 +6,24 @@ public class SingleTargetStrategy : ITowerStrategy
 {
     public void Execute(Tower tower)
     {
-        Enemy target = FindNearestEnemy(tower.transform.position, tower.Range);
-        if (target != null)
-        {
-            target.TakeDamage(tower.Damage);
-            Debug.Log("Single Target: Damaged " + target.name);
-        }
-    }
+        Enemy[] enemies = GameObject.FindObjectsOfType<Enemy>();
+        Enemy nearestEnemy = null;
+        float shortestDistance = Mathf.Infinity;
 
-    private Enemy FindNearestEnemy(Vector3 position, float range)
-    {
-        // Logic to find the nearest enemy within range
-        return null; // Placeholder
+        foreach (Enemy enemy in enemies)
+        {
+            float distance = Vector3.Distance(tower.transform.position, enemy.transform.position);
+            if (distance < shortestDistance && distance <= tower.Range)
+            {
+                shortestDistance = distance;
+                nearestEnemy = enemy;
+            }
+        }
+
+        if (nearestEnemy != null)
+        {
+            nearestEnemy.TakeDamage(tower.Damage);
+            Debug.Log($"{tower.name} attacked {nearestEnemy.name} with {tower.Damage} damage.");
+        }
     }
 }
