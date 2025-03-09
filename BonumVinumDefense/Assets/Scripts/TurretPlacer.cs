@@ -10,12 +10,12 @@ public class TurretPlacer : MonoBehaviour
     public string selectedEffect = "Burn"; // Default effect
 
     private Camera mainCamera;
+    private TowerFactory towerFactory;
 
     private void Start()
     {
-        Debug.Log("Turret Placer initialized.");
         mainCamera = Camera.main;
-        Debug.Log($"Main Camera: {mainCamera.name}");
+        towerFactory = new TowerFactory(turretPrefab);
     }
 
     private void Update()
@@ -53,17 +53,16 @@ public class TurretPlacer : MonoBehaviour
             Node node = hit.collider.GetComponent<Node>();
             if (node != null && !node.isOccupied)
             {
-                GameObject newTowerObj = Instantiate(turretPrefab, node.transform.position, Quaternion.identity);
-                Tower newTower = newTowerObj.GetComponent<Tower>();
-
                 // Apply selected strategy
                 ITowerStrategy strategy = selectedStrategy == "SingleTarget" ? new SingleTargetStrategy() : new AOETargetStrategy();
-                newTower.SetStrategy(strategy);
 
-                newTower.SetEffect(selectedEffect);
+                Tower newTower = towerFactory.CreateTower(node.transform.position, Quaternion.identity, strategy, selectedEffect);
+                if (newTower != null)
+                {
+                    Debug.Log($"Tower placed at {position} with {strategy.GetType().Name} and effect {selectedEffect}");
+                }
 
                 node.isOccupied = true;
-                Debug.Log($"Tower placed at: {node.transform.position} with {selectedStrategy} strategy and {selectedEffect} effect.");
             }
         }
     }
