@@ -1,9 +1,12 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TurretPlacer : MonoBehaviour
 {
     public GameObject turretPrefab; // Turret to place
     public LayerMask nodeLayerMask; // Layer mask for nodes
+    public PathValidator pathValidator;
 
     private bool isPlacingMode = true;
     public string selectedStrategy = "SingleTarget"; // Default strategy
@@ -21,11 +24,13 @@ public class TurretPlacer : MonoBehaviour
     private void Update()
     {
         //Handle keyboard input
+        /*
         if(Input.GetKeyDown(KeyCode.LeftControl))
         {
             TogglePlacementMode();
         }
-
+        */
+        
         if (Input.GetMouseButtonDown(0)) // Left Click
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -57,13 +62,15 @@ public class TurretPlacer : MonoBehaviour
                 ITowerStrategy strategy = selectedStrategy == "SingleTarget" ? new SingleTargetStrategy() : new AOETargetStrategy();
 
                 Tower newTower = towerFactory.CreateTower(node.transform.position, Quaternion.identity, strategy, selectedEffect);
-                if (newTower != null)
+                if (newTower == null)
                 {
-                    Debug.Log($"Tower placed at {position} with {strategy.GetType().Name} and effect {selectedEffect}");
+                    Debug.LogWarning("Failed to create tower.");
+                    return;
                 }
 
-                node.isOccupied = true;
-            }
+                // Wait for path validation before confirming placement
+                StartCoroutine(ValidatePlacement(newTower, node));
+        }
         }
     }
 
@@ -77,5 +84,24 @@ public class TurretPlacer : MonoBehaviour
     {
         selectedEffect = effectType;
         Debug.Log($"Selected Effect: {selectedEffect}");
+    }
+
+    private IEnumerator ValidatePlacement(Tower newTower, Node node)
+    {
+        bool isValid = false;
+        
+        // ✅ Call path validator with a callback
+        yield return StartCoroutine(pathValidator.IsPlacementValidCoroutine(result => isValid = result));
+
+        if (!isValid)
+        {
+            Debug.LogWarning("Invalid placement! Destroying tower...");
+            Destroy(newTower.gameObject); // Remove invalid tower
+        }
+        else
+        {
+            node.isOccupied = true;
+            Debug.Log($"Tower placed successfully with {selectedStrategy} and effect {selectedEffect}");
+        }
     }
 }

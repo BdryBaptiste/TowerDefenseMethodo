@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6996494330731566241}
   - component: {fileID: 4518022460340868978}
-  - component: {fileID: 7322133043047203012}
+  - component: {fileID: 1564062404180213615}
   m_Layer: 3
   m_Name: Nodes
   m_TagString: Untagged
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridPrefab: {fileID: 165781110101927496}
   gridSize: 9
---- !u!114 &7322133043047203012
+--- !u!114 &1564062404180213615
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 446d8c4d17033ca428bad91ffd3fdb10, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: d0b4a28e9b5f9c545b8964aaa4276bb5, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &78450298418650647
 PrefabInstance:

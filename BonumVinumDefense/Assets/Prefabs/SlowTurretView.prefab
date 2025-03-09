@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8212602208470827590}
   - component: {fileID: 8183464815850532236}
   - component: {fileID: 8194479793084243300}
-  - component: {fileID: 172066381582042418}
   m_Layer: 0
   m_Name: SlowTurretView
   m_TagString: Untagged
@@ -84,19 +83,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!208 &172066381582042418
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8209146344101455166}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.49500003, y: 0.69000006, z: 0.505}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.69000006, z: -0.019000001}
-  m_TimeToStationary: 0.5

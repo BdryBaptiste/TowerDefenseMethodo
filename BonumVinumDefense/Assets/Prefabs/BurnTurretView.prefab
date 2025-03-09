@@ -94,7 +94,6 @@ GameObject:
   - component: {fileID: 1101255554115934239}
   - component: {fileID: 1089990472215017685}
   - component: {fileID: 1084135964934740801}
-  - component: {fileID: 278019028706143022}
   m_Layer: 0
   m_Name: BurnTurretView
   m_TagString: Untagged
@@ -168,19 +167,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!208 &278019028706143022
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1107482352848106893}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 0.45800003, y: 0.115, z: 0.45800003}
-  m_MoveThreshold: 0.1
-  m_Carve: 1
-  m_CarveOnlyStationary: 1
-  m_Center: {x: 0, y: 0.115, z: 0}
-  m_TimeToStationary: 0.5
