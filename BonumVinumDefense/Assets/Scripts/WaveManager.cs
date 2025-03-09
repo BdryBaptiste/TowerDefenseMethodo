@@ -112,12 +112,20 @@ public class WaveManager : MonoBehaviour
         {
             enemyComponent.OnDeathEvent += EnemyDied;
             enemyComponent.target = enemyTarget;
+            enemyComponent.OnReachGoal += EnemyReachedGoal;
         }
     }
 
     private void EnemyDied()
     {
         aliveEnemies--;
+    }
+
+    private void EnemyReachedGoal(Enemy enemy)
+    {
+        aliveEnemies--; // Reduce count when enemy reaches goal
+        Debug.Log($"Enemy reached goal! {aliveEnemies} enemies left.");
+        GameManager.Instance.LoseLife(enemy.Damage); // Tell GameManager to remove life
     }
 
     public bool IsWaveInProgress()

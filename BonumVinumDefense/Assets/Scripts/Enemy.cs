@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public delegate void EnemyDeathEvent();
-    public event EnemyDeathEvent OnDeathEvent;
+    public event Action OnDeathEvent;
+    public event Action<Enemy> OnReachGoal;
     
     [Header("Enemy Attributes")]
     public string Type;
@@ -45,6 +46,7 @@ public class Enemy : MonoBehaviour
         Move();
         UpdateEffects();
         CheckHealth();
+        CheckGoal();
     }
 
     public void Move()
@@ -78,6 +80,14 @@ public class Enemy : MonoBehaviour
         {
             Health = 0;
             OnDeath();
+        }
+    }
+
+    private void CheckGoal()
+    {
+        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+        {
+            ReachGoal();
         }
     }
 
@@ -147,6 +157,13 @@ public class Enemy : MonoBehaviour
         OnDeathEvent?.Invoke();
         GameManager.Instance.AddGold(Reward);
         Debug.Log($"{name} died. Player earned {Reward} gold.");
+        Destroy(gameObject);
+    }
+
+    private void ReachGoal()
+    {
+        Debug.Log($"{gameObject.name} reached the goal! Dealing {Damage} damage.");
+        OnReachGoal?.Invoke(this); // Calls event to reduce life points
         Destroy(gameObject);
     }
 }
