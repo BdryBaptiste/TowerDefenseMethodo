@@ -6,6 +6,7 @@ public class WaveManager : MonoBehaviour
 {
     public List<Wave> baseWaves;
     public Transform spawnPoint;
+    public Transform enemyTarget;
     public GameObject enemyPrefab;
     private int currentWaveIndex = 0;
     private bool isSpawning = false;
@@ -110,6 +111,7 @@ public class WaveManager : MonoBehaviour
         if (enemyComponent != null)
         {
             enemyComponent.OnDeathEvent += EnemyDied;
+            enemyComponent.target = enemyTarget;
         }
     }
 

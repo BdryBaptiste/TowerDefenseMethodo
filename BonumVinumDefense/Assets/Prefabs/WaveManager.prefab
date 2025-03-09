@@ -151,3 +151,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 8798414490734914131}
+  enemyPrefab: {fileID: 0}

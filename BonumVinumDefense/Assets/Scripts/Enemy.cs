@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,9 +19,25 @@ public class Enemy : MonoBehaviour
 
     private float baseSpeed; // Original speed for restoring after effects
 
+    [Header("NavMesh Settings")]
+    public NavMeshAgent agent;
+    public Transform target;
+
     private void Start()
     {
         baseSpeed = Speed;
+
+        agent = GetComponent<NavMeshAgent>();
+        agent.speed = Speed;
+
+        if (target != null)
+        {
+            agent.SetDestination(target.position);
+        }
+        else
+        {
+            Debug.LogWarning("La cible (target) n'a pas été assignée à l'ennemi !");
+        }
     }
 
     private void Update()
@@ -32,7 +49,10 @@ public class Enemy : MonoBehaviour
 
     public void Move()
     {
-        transform.Translate(Vector3.right * Speed * Time.deltaTime);
+        if(agent != null && target != null)
+        {
+            agent.SetDestination(target.position);
+        }
     }
 
     public void TakeDamage(float damage)
