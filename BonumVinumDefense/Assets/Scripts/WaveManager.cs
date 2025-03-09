@@ -14,6 +14,7 @@ public class WaveManager : MonoBehaviour
 
     public delegate void WaveCompletedHandler(int waveNumber);
     public event WaveCompletedHandler OnWaveCompleted;
+    public EnemyFactory enemyFactory;
 
     public void StartInfiniteWaves()
     {
@@ -87,7 +88,7 @@ public class WaveManager : MonoBehaviour
         {
             for (int i = 0; i < enemyInfo.count; i++)
             {
-                SpawnEnemy(enemyInfo.enemyPrefab);
+                SpawnEnemy(enemyInfo.enemyType);
                 yield return new WaitForSeconds(enemyInfo.spawnDelay);
             }
         }
@@ -103,6 +104,21 @@ public class WaveManager : MonoBehaviour
         OnWaveCompleted?.Invoke(currentWaveIndex + 1);
     }
 
+
+    private void SpawnEnemy(EnemyType enemyType)
+    {
+        GameObject enemy = enemyFactory.CreateEnemy(enemyType, spawnPoint.position);
+        aliveEnemies++;
+
+        EnemyBase enemyComponent = enemy.GetComponent<EnemyBase>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.OnDeathEvent += EnemyDied;
+        }
+    }
+
+
+    /*
     private void SpawnEnemy(GameObject enemyPrefab)
     {
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
@@ -114,6 +130,7 @@ public class WaveManager : MonoBehaviour
             enemyComponent.target = enemyTarget;
         }
     }
+    */
 
     private void EnemyDied()
     {
