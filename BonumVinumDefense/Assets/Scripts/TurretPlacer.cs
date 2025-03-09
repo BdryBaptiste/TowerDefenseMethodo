@@ -20,20 +20,23 @@ public class TurretPlacer : MonoBehaviour
 
     private void Update()
     {
-        //Handle keyboard input
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (!PauseMenu.isPaused)
         {
-            TogglePlacementMode();
-        }
-
-        if (Input.GetMouseButtonDown(0)) // Left Click
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            //Handle keyboard input
+            if(Input.GetKeyDown(KeyCode.LeftControl))
             {
-                if (isPlacingMode)
+                TogglePlacementMode();
+            }
+
+            if (Input.GetMouseButtonDown(0)) // Left Click
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    AttemptPlaceTurret(hit.point);
+                    if (isPlacingMode)
+                    {
+                        AttemptPlaceTurret(hit.point);
+                    }
                 }
             }
         }
