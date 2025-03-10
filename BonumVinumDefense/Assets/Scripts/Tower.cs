@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public float Range { get; protected set; } = 5f; // Attack range
-    public int Damage { get; protected set; } = 10; // Damage dealt per attack
-    public float Cooldown { get; protected set; } = 1f; // Attacks per second
+    public virtual float Range { get; protected set; } = 5f; // Attack range
+    public virtual int Damage { get; protected set; } = 10; // Damage dealt per attack
+    public virtual float Cooldown { get; protected set; } = 1f; // Attacks per second
 
     public Transform firePoint; // Point from where projectiles are fired
     public Transform visualHolder;
@@ -19,6 +20,15 @@ public class Tower : MonoBehaviour
     public ITowerStrategy attackStrategy;
 
     private TowerDecorator effectDecorator;
+    private List<TowerUpgradeDecorator> upgrades = new List<TowerUpgradeDecorator>();
+
+    private void Start()
+    {
+        UpgradeManager.Instance.RegisterTower(this);
+        ApplyGlobalUpgrades(UpgradeManager.Instance.GetGlobalDamageUpgrade(), 
+                            UpgradeManager.Instance.GetGlobalRangeUpgrade(), 
+                            UpgradeManager.Instance.GetGlobalCooldownReduction());
+    }
 
     private void Update()
     {
@@ -27,7 +37,7 @@ public class Tower : MonoBehaviour
         if (attackCooldown <= 0f)
         {
             Attack();
-            attackCooldown = 1f / Cooldown;
+            attackCooldown = Cooldown;
         }
     }
 
@@ -56,16 +66,25 @@ public class Tower : MonoBehaviour
         }
     }
 
-    public void Attack()
+    public virtual void Attack()
     {
         if (effectDecorator != null)
         {
-            effectDecorator.Execute(this); // ✅ Decorator handles effects
+            effectDecorator.Execute(this); // Decorator handles effects
         }
         else if (attackStrategy != null)
         {
             attackStrategy.Execute(this);
         }
+    }
+
+    public void ApplyGlobalUpgrades(int damageBonus, float rangeBonus, float cooldownReduction)
+    {
+        Damage = Damage + damageBonus;
+        Range = Range + rangeBonus;
+        Cooldown = Mathf.Max(0.1f, Cooldown - cooldownReduction);
+
+        Debug.Log($" Tower updated! Damage: {Damage}, Range: {Range}, Cooldown: {Cooldown}");
     }
 
 
@@ -87,22 +106,10 @@ public class Tower : MonoBehaviour
         }
     }
 
-    public void UpgradeRange(float amount)
+    public void ApplyUpgrade(TowerUpgradeDecorator upgrade)
     {
-        Range += amount;
-        Debug.Log($"Tower : Range upgraded to {Range}");
-    }
-
-    public void UpgradeDamage(int amount)
-    {
-        Damage += amount;
-        Debug.Log($"Tower : Damage upgraded to {Damage}");
-    }
-
-    public void UpgradeCooldown(float amount)
-    {
-        Cooldown = Mathf.Max(0.1f, Cooldown - amount); // Prevent cooldown from going below 0.1
-        Debug.Log($"Tower : Cooldown upgraded to {Cooldown}");
+        upgrades.Add(upgrade);
+        Debug.Log($"Applied upgrade: {upgrade.GetType().Name}");
     }
 
     private void OnDrawGizmosSelected()

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1235,6 +1235,74 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 910286719581343425, guid: 79e0a9d19bbbbaf4aaf336b156842a69, type: 3}
   m_PrefabInstance: {fileID: 7983842731791048450}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1387391926
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 667183273065338026, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_Name
+      value: UpgradeManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1142.5078
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 834.03314
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5846636896518857850, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+--- !u!114 &1387391927 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5230577839506596457, guid: d5106215885ff0e438575b1577286ab2, type: 3}
+  m_PrefabInstance: {fileID: 1387391926}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acb42c4d6ff879b499a8eed7a1c3942f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1389364866 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4968719605955047192, guid: 79e0a9d19bbbbaf4aaf336b156842a69, type: 3}
@@ -2424,6 +2492,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1877548929761384155 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5493268155800878376, guid: 6d1774efe97738d41823178cd0a337ca, type: 3}
+  m_PrefabInstance: {fileID: 1877548929761384153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1877548929761384156 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7959330338747520539, guid: 6d1774efe97738d41823178cd0a337ca, type: 3}
+  m_PrefabInstance: {fileID: 1877548929761384153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1877548929761384157 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8858256119426133277, guid: 6d1774efe97738d41823178cd0a337ca, type: 3}
+  m_PrefabInstance: {fileID: 1877548929761384153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3394461778411782509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2583,6 +2684,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 734517221}
     - target: {fileID: 5520908384865963369, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
+      propertyPath: upgradeManager
+      value: 
+      objectReference: {fileID: 1387391927}
+    - target: {fileID: 5520908384865963369, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
       propertyPath: selectionManager
       value: 
       objectReference: {fileID: 2056259612}
@@ -2590,6 +2695,18 @@ PrefabInstance:
       propertyPath: singleTargetButton
       value: 
       objectReference: {fileID: 715622100}
+    - target: {fileID: 5520908384865963369, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
+      propertyPath: upgradeRangeButton
+      value: 
+      objectReference: {fileID: 1877548929761384156}
+    - target: {fileID: 5520908384865963369, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
+      propertyPath: upgradeDamageButton
+      value: 
+      objectReference: {fileID: 1877548929761384157}
+    - target: {fileID: 5520908384865963369, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
+      propertyPath: upgradeCooldownButton
+      value: 
+      objectReference: {fileID: 1877548929761384155}
     - target: {fileID: 6156499894940771385, guid: 3a68b40635b4a7648b0b4458111950a5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1317.7501
@@ -2772,3 +2889,4 @@ SceneRoots:
   - {fileID: 72354596130678095}
   - {fileID: 1573643980}
   - {fileID: 818906526}
+  - {fileID: 1387391926}

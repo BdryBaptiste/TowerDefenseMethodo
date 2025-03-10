@@ -82,8 +82,9 @@ public class Enemy : MonoBehaviour
     public void ScaleStats(int waveNumber)
     {
         Health += Mathf.CeilToInt(baseHealth + (waveNumber * 25)); // Increase health every wave
+        baseSpeed += baseSpeed * (waveNumber * 0.2f); // Increase speed every wave
 
-        Debug.Log($"Scaling Enemy - Health: {Health}, Wave: {waveNumber}");
+        Debug.Log($"Scaling Enemy - Health: {Health}, Speed: {baseSpeed} Wave: {waveNumber}");
     }
 
     private void CheckHealth()
