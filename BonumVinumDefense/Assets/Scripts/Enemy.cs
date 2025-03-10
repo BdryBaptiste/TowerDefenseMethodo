@@ -93,6 +93,8 @@ public class Enemy : MonoBehaviour
 
     private void CheckGoal()
     {
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
+        
         if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
         {
             ReachGoal();
