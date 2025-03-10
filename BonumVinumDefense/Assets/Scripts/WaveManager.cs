@@ -10,7 +10,8 @@ public class WaveManager : MonoBehaviour
     public GameObject enemyPrefab;
     private int currentWaveIndex = 0;
     private bool isSpawning = false;
-    private int aliveEnemies = 0;
+
+    private List<Enemy> aliveEnemies = new List<Enemy>();
 
     public delegate void WaveCompletedHandler(int waveNumber);
     public event WaveCompletedHandler OnWaveCompleted;
@@ -95,7 +96,7 @@ public class WaveManager : MonoBehaviour
         isSpawning = false;
         Debug.Log($"Wave {wave.waveName} completed.");
 
-        while (aliveEnemies > 0)
+        while (aliveEnemies.Count > 0)
         {
             yield return null;
         }
@@ -106,30 +107,30 @@ public class WaveManager : MonoBehaviour
     private void SpawnEnemy(GameObject enemyPrefab)
     {
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-        aliveEnemies++;
         Enemy enemyComponent = enemy.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
+            aliveEnemies.Add(enemyComponent);
             enemyComponent.OnDeathEvent += EnemyDied;
             enemyComponent.target = enemyTarget;
             enemyComponent.OnReachGoal += EnemyReachedGoal;
         }
     }
 
-    private void EnemyDied()
+    private void EnemyDied(Enemy enemy)
     {
-        aliveEnemies--;
+        aliveEnemies.Remove(enemy);
     }
 
     private void EnemyReachedGoal(Enemy enemy)
     {
-        aliveEnemies--; // Reduce count when enemy reaches goal
+        aliveEnemies.Remove(enemy);
         Debug.Log($"Enemy reached goal! {aliveEnemies} enemies left.");
         GameManager.Instance.LoseLife(enemy.Damage); // Tell GameManager to remove life
     }
 
     public bool IsWaveInProgress()
     {
-        return isSpawning || aliveEnemies > 0;
+        return isSpawning || aliveEnemies.Count > 0;
     }
 }

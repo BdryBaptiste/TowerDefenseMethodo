@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public event Action OnDeathEvent;
+    public event Action<Enemy> OnDeathEvent;
     public event Action<Enemy> OnReachGoal;
     
     [Header("Enemy Attributes")]
@@ -154,7 +154,7 @@ public class Enemy : MonoBehaviour
 
     private void OnDeath()
     {
-        OnDeathEvent?.Invoke();
+        OnDeathEvent?.Invoke(this);
         GameManager.Instance.AddGold(Reward);
         Debug.Log($"{name} died. Player earned {Reward} gold.");
         Destroy(gameObject);

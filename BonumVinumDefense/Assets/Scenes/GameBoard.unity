@@ -123,6 +123,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &21855492 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2026852387943261730, guid: 6d1774efe97738d41823178cd0a337ca, type: 3}
+  m_PrefabInstance: {fileID: 1877548929761384153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &207752927 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6013644210170850464, guid: f34e893e1e554234c9060fb81c88f551, type: 3}
@@ -161,6 +172,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5778c0491acad5940bf2c98ee33cacf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &446367527 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4485434375469446021, guid: 6d1774efe97738d41823178cd0a337ca, type: 3}
+  m_PrefabInstance: {fileID: 1877548929761384153}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &521843695 stripped
@@ -2083,6 +2105,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 587187265741160650, guid: 6d7bed43fd5e2ea4ba909a84cc73b957, type: 3}
+      propertyPath: goldText
+      value: 
+      objectReference: {fileID: 446367527}
+    - target: {fileID: 587187265741160650, guid: 6d7bed43fd5e2ea4ba909a84cc73b957, type: 3}
+      propertyPath: livesText
+      value: 
+      objectReference: {fileID: 21855492}
     - target: {fileID: 587187265741160650, guid: 6d7bed43fd5e2ea4ba909a84cc73b957, type: 3}
       propertyPath: gameManager
       value: 

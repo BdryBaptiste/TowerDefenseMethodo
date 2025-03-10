@@ -1,12 +1,14 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public int lives = 20;
+    public event Action<int> OnLivesChanged;
+    public event Action<int> OnGoldChanged;
+
     public int currentWave = 0;
-    public int gold = 100;
 
     public Map map;
     public Leaderboard leaderboard;
@@ -34,10 +36,20 @@ public class GameManager : MonoBehaviour
         if (player == null)
             player = new Player("name");
 
-        player.EarnGold(gold);
-        player.Lives = lives;
+        OnLivesChanged?.Invoke(player.Lives);
+        OnGoldChanged?.Invoke(player.Gold);
 
         Debug.Log("Game initialized.");
+    }
+
+    public int GetLives()
+    {
+        return player.Lives;
+    }
+
+    public int GetGold()
+    {
+        return player.Gold;
     }
 
     public void StartGame()
@@ -66,6 +78,8 @@ public class GameManager : MonoBehaviour
         player.Lives -= amount;
         Debug.Log($"Player lost {amount} lives. Remaining: {player.Lives}");
 
+        OnLivesChanged?.Invoke(player.Lives);
+
         if (player.Lives <= 0)
         {
             EndGame();
@@ -82,6 +96,7 @@ public class GameManager : MonoBehaviour
     {
         if (player.SpendGold(amount))
         {
+            OnGoldChanged?.Invoke(player.Gold);
             Debug.Log($"Player spent {amount} gold. Remaining: {player.Gold}");
             return true;
         }
