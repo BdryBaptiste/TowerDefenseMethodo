@@ -56,7 +56,7 @@ public class WaveManager : MonoBehaviour
         {
             Wave newWave = GenerateWave(currentWaveIndex + 1);
             yield return StartCoroutine(SpawnWave(newWave));
-            currentWaveIndex++;
+            //currentWaveIndex++;
             yield return new WaitForSeconds(5f);
         }
     }
@@ -100,8 +100,10 @@ public class WaveManager : MonoBehaviour
         {
             yield return null;
         }
+        currentWaveIndex++;
+        ScoreManager.instance.UpdateScore();
 
-        OnWaveCompleted?.Invoke(currentWaveIndex + 1);
+        OnWaveCompleted?.Invoke(currentWaveIndex);
     }
 
     private void SpawnEnemy(GameObject enemyPrefab, int waveNumber)
@@ -134,4 +136,10 @@ public class WaveManager : MonoBehaviour
     {
         return isSpawning || aliveEnemies.Count > 0;
     }
+
+    public int GetCurrentWaveNumber()
+    {
+        return currentWaveIndex + 1;
+    }
+
 }

@@ -57,7 +57,8 @@ public class PauseMenu : MonoBehaviour
     public void RestartGame()
     {
         Debug.Log("Restarting game...");
-        Time.timeScale = 1f; // 🔹 Remet le temps à la vitesse normale
+        Time.timeScale = 1f;
+        isPaused = false;
 
         if (GameManager.Instance != null)
         {
