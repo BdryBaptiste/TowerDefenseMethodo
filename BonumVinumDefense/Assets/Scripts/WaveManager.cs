@@ -88,7 +88,7 @@ public class WaveManager : MonoBehaviour
         {
             for (int i = 0; i < enemyInfo.count; i++)
             {
-                SpawnEnemy(enemyInfo.enemyPrefab);
+                SpawnEnemy(enemyInfo.enemyPrefab, currentWaveIndex + 1);
                 yield return new WaitForSeconds(enemyInfo.spawnDelay);
             }
         }
@@ -104,13 +104,14 @@ public class WaveManager : MonoBehaviour
         OnWaveCompleted?.Invoke(currentWaveIndex + 1);
     }
 
-    private void SpawnEnemy(GameObject enemyPrefab)
+    private void SpawnEnemy(GameObject enemyPrefab, int waveNumber)
     {
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
         Enemy enemyComponent = enemy.GetComponent<Enemy>();
         if (enemyComponent != null)
         {
             aliveEnemies.Add(enemyComponent);
+            enemyComponent.ScaleStats(waveNumber);
             enemyComponent.OnDeathEvent += EnemyDied;
             enemyComponent.target = enemyTarget;
             enemyComponent.OnReachGoal += EnemyReachedGoal;

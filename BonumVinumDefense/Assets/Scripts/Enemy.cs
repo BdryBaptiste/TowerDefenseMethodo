@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
     
     [Header("Enemy Attributes")]
     public string Type;
-    public int Health = 100; // Enemy's current health
+    public int Health = 50; // Enemy's current health
     public float Speed = 3.5f; // Movement speed
     public int Damage = 1; // Damage dealt to the player on reaching the goal
     public int Reward = 10; // Gold rewarded on death
@@ -19,6 +19,7 @@ public class Enemy : MonoBehaviour
     private List<ActiveEffect> activeEffects = new List<ActiveEffect>();
 
     private float baseSpeed; // Original speed for restoring after effects
+    private float baseHealth = 50;
 
     [Header("NavMesh Settings")]
     public NavMeshAgent agent;
@@ -72,6 +73,13 @@ public class Enemy : MonoBehaviour
         }
 
         Debug.Log($"{name} took {damage} damage. Remaining health: {Health}");
+    }
+
+    public void ScaleStats(int waveNumber)
+    {
+        Health += Mathf.CeilToInt(baseHealth + (waveNumber * 25)); // Increase health every wave
+
+        Debug.Log($"Scaling Enemy - Health: {Health}, Wave: {waveNumber}");
     }
 
     private void CheckHealth()
