@@ -6,7 +6,7 @@ public class Player
     public string Name { get; private set; }
     public int Lives { get; set; } = 20; // Starting lives
     public int Score { get; private set; } = 0; // Player's score
-    public int Gold { get; private set; } = 1000; // Starting gold
+    public int Gold { get; private set; } = 100; // Starting gold
 
     public Player(string name)
     {
