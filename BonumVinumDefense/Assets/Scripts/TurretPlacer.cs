@@ -8,6 +8,8 @@ public class TurretPlacer : MonoBehaviour
     public LayerMask nodeLayerMask; // Layer mask for nodes
     public PathValidator pathValidator;
 
+    public int turretCost = 25;
+
     private bool isPlacingMode = true;
     public string selectedStrategy = "SingleTarget"; // Default strategy
     public string selectedEffect = "Burn"; // Default effect
@@ -59,6 +61,11 @@ public class TurretPlacer : MonoBehaviour
             Node node = hit.collider.GetComponent<Node>();
             if (node != null && !node.isOccupied)
             {
+                if (!GameManager.Instance.SpendGold(turretCost)) // Only continue if player has enough gold
+                {
+                    Debug.LogWarning("Not enough gold to place turret!");
+                    return;
+                }
                 // Apply selected strategy
                 ITowerStrategy strategy = selectedStrategy == "SingleTarget" ? new SingleTargetStrategy() : new AOETargetStrategy();
 
@@ -70,7 +77,7 @@ public class TurretPlacer : MonoBehaviour
                 }
 
                 // Wait for path validation before confirming placement
-                StartCoroutine(ValidatePlacement(newTower, node));
+                StartCoroutine(ValidatePlacement(newTower, node, turretCost));
         }
         }
     }
@@ -87,7 +94,7 @@ public class TurretPlacer : MonoBehaviour
         Debug.Log($"Selected Effect: {selectedEffect}");
     }
 
-    private IEnumerator ValidatePlacement(Tower newTower, Node node)
+    private IEnumerator ValidatePlacement(Tower newTower, Node node, int cost)
     {
         bool isValid = false;
         
@@ -98,6 +105,7 @@ public class TurretPlacer : MonoBehaviour
         {
             Debug.LogWarning("Invalid placement! Destroying tower...");
             Destroy(newTower.gameObject); // Remove invalid tower
+            GameManager.Instance.AddGold(cost);
         }
         else
         {
