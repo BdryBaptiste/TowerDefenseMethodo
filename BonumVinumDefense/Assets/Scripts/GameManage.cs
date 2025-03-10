@@ -89,6 +89,7 @@ public class GameManager : MonoBehaviour
     public void AddGold(int amount)
     {
         player.EarnGold(amount);
+        OnGoldChanged?.Invoke(player.Gold);
         Debug.Log($"Player earned {amount} gold. Total: {player.Gold}");
     }
 
