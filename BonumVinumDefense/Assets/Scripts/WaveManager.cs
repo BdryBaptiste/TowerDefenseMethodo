@@ -88,7 +88,7 @@ public class WaveManager : MonoBehaviour
         {
             for (int i = 0; i < enemyInfo.count; i++)
             {
-                SpawnEnemy(enemyInfo.enemyPrefab, currentWaveIndex + 1);
+                SpawnEnemy(enemyInfo.enemyPrefab, currentWaveIndex);
                 yield return new WaitForSeconds(enemyInfo.spawnDelay);
             }
         }

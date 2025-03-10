@@ -25,6 +25,10 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent agent;
     public Transform target;
 
+    public GameObject burnEffect;
+    public GameObject slowEffect;
+    public GameObject poisonEffect;
+
     private void Start()
     {
         baseSpeed = Speed;
@@ -94,7 +98,7 @@ public class Enemy : MonoBehaviour
     private void CheckGoal()
     {
         if (agent == null || !agent.enabled || !agent.isOnNavMesh) return;
-        
+
         if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
         {
             ReachGoal();
@@ -130,24 +134,45 @@ public class Enemy : MonoBehaviour
         switch (effect)
         {
             case BurnEffect burn:
-                if (Time.time >= burn.NextTickTime) // Check if it's time to apply damage
-                {
-                    TakeDamage(burn.DamagePerTick);
-                    burn.NextTickTime = Time.time + burn.TickInterval; // Schedule next tick
-                }
-                break;
+            if (burnEffect)
+            {
+                burnEffect.SetActive(true);
+                var burnParticles = burnEffect.GetComponent<ParticleSystem>();
+                if (burnParticles && !burnParticles.isPlaying)
+                    burnParticles.Play(); // Force play
+            }
+            if (Time.time >= burn.NextTickTime)
+            {
+                TakeDamage(burn.DamagePerTick);
+                burn.NextTickTime = Time.time + burn.TickInterval;
+            }
+            break;
 
-            case SlowEffect slow:
-                Speed = Mathf.Max(baseSpeed * (1 - slow.SlowPercentage), 0.5f);
-                break;
+        case SlowEffect slow:
+            if (slowEffect)
+            {
+                slowEffect.SetActive(true);
+                var slowParticles = slowEffect.GetComponent<ParticleSystem>();
+                if (slowParticles && !slowParticles.isPlaying)
+                    slowParticles.Play(); // Force play
+            }
+            Speed = Mathf.Max(baseSpeed * (1 - slow.SlowPercentage), 0.5f);
+            break;
 
-            case PoisonEffect poison:
-                if (Time.time >= poison.NextTickTime)
-                {
-                    TakeDamage(poison.DamagePerTick);
-                    poison.NextTickTime = Time.time + poison.TickInterval;
-                }
-                break;
+        case PoisonEffect poison:
+            if (poisonEffect)
+            {
+                poisonEffect.SetActive(true);
+                var poisonParticles = poisonEffect.GetComponent<ParticleSystem>();
+                if (poisonParticles && !poisonParticles.isPlaying)
+                    poisonParticles.Play(); // Force play
+            }
+            if (Time.time >= poison.NextTickTime)
+            {
+                TakeDamage(poison.DamagePerTick);
+                poison.NextTickTime = Time.time + poison.TickInterval;
+            }
+            break;
         }
     }
 
@@ -157,9 +182,33 @@ public class Enemy : MonoBehaviour
         activeEffects.Remove(activeEffect);
 
         if (activeEffect.Effect is SlowEffect)
+    {
+        Speed = baseSpeed;
+        if (slowEffect)
         {
-            Speed = baseSpeed;
+            var slowParticles = slowEffect.GetComponent<ParticleSystem>();
+            if (slowParticles) slowParticles.Stop(); // Stop slow effect
+            slowEffect.SetActive(false);
         }
+    }
+    else if (activeEffect.Effect is BurnEffect)
+    {
+        if (burnEffect)
+        {
+            var burnParticles = burnEffect.GetComponent<ParticleSystem>();
+            if (burnParticles) burnParticles.Stop(); // Stop burn effect
+            burnEffect.SetActive(false);
+        }
+    }
+    else if (activeEffect.Effect is PoisonEffect)
+    {
+        if (poisonEffect)
+        {
+            var poisonParticles = poisonEffect.GetComponent<ParticleSystem>();
+            if (poisonParticles) poisonParticles.Stop(); // Stop poison effect
+            poisonEffect.SetActive(false);
+        }
+    }
     }
 
     private void OnDeath()
