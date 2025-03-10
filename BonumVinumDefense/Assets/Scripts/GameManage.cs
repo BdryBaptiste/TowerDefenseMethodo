@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public Leaderboard leaderboard;
     public Player player;
     public WaveManager waveManager;
+    public GameObject gameOverMenu;
 
     private void Awake()
     {
@@ -70,7 +71,13 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         Debug.Log("Game over.");
-        leaderboard.AddScore(player);
+        if(gameOverMenu == null)
+        {
+            Debug.LogError("Game over menu not set!");
+            return;
+        }
+        Time.timeScale = 0f;
+        gameOverMenu.SetActive(true);
     }
 
     public void LoseLife(int amount)
